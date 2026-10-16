@@ -1,0 +1,6 @@
+{
+  "name": "FUNDI - Construction Marketplace, Escrow & Budget Control",
+  "description": "Construction marketplace, ironclad milestone escrow, live budget guard, and Kenya compliance checklist engine for owners, contractors, experts, and fundis.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
