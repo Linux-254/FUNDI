@@ -41,14 +41,16 @@ export const Navbar: React.FC<NavbarProps> = ({
   };
 
   const navLinks = [
+    { label: 'Dashboard', path: '/dashboard' },
     { label: 'Workspace', path: '/app/projects/proj-karen-villa' },
     { label: 'Marketplace', path: '/marketplace' },
+    { label: 'Knowledge Base', path: '/knowledge-base' },
     { label: 'Escrow & Trust', path: '/trust' },
-    { label: 'Pricing', path: '/pricing' },
-    { label: 'Investors', path: '/investors' }
+    { label: 'Pricing', path: '/pricing' }
   ];
 
   const isActive = (path: string) => {
+    if (path === '/dashboard' && (location.pathname === '/dashboard' || location.pathname === '/projects')) return true;
     if (path.startsWith('/app/projects') && location.pathname.startsWith('/app/projects')) return true;
     return location.pathname === path;
   };

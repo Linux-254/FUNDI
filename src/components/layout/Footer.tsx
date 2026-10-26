@@ -49,7 +49,9 @@ export const Footer: React.FC = () => {
           <div>
             <h4 className="text-xs font-semibold text-white uppercase tracking-wider mb-4">Workspace & Platform</h4>
             <ul className="space-y-2.5 text-xs text-[#D9DEE3]/80">
+              <li><Link to="/dashboard" className="hover:text-white transition-colors font-medium">Projects Dashboard</Link></li>
               <li><Link to="/app/projects/proj-karen-villa" className="hover:text-white transition-colors">Karen Villa Workspace</Link></li>
+              <li><Link to="/knowledge-base" className="hover:text-white transition-colors text-[#C8A24A] font-semibold">Sector Packs & Knowledge Base</Link></li>
               <li><Link to="/marketplace" className="hover:text-white transition-colors">Contractors & Experts</Link></li>
               <li><Link to="/marketplace?tab=materials" className="hover:text-white transition-colors">Materials & Plant Hire</Link></li>
               <li><Link to="/trust" className="hover:text-white transition-colors">Escrow State Machine</Link></li>

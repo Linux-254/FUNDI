@@ -234,3 +234,150 @@ export interface MarketplaceEntity {
   insuranceOnBoard: boolean;
   contactMasked: boolean;
 }
+
+// --- Knowledge Base v1 Types ---
+export interface DataQualityRecord {
+  source: string;
+  confidence: 'low' | 'medium' | 'high';
+  lastVerifiedAt: string | null;
+  verifyAt?: string;
+  verifiedBy?: string;
+}
+
+export interface StatutoryAgency {
+  id: string;
+  name: string;
+  issues: string[];
+  stage: 'before' | 'during' | 'after' | 'lifecycle' | string;
+}
+
+export interface DocumentChecklistItem extends DataQualityRecord {
+  id: string;
+  doc: string;
+  agency: string;
+  appliesTo: string;
+  blocking?: boolean;
+  stage: 'before' | 'during' | 'after' | 'lifecycle';
+  note?: string;
+}
+
+export interface FeeScheduleItem extends DataQualityRecord {
+  id: string;
+  item: string;
+  indicative: string;
+}
+
+export interface CostPerSqmSeed extends DataQualityRecord {
+  id: string;
+  type: string;
+  minKesPerSqm?: number;
+  maxKesPerSqm?: number;
+  note?: string;
+}
+
+export interface NcaClassLimit {
+  ncaClass: string;
+  category: string;
+  contractValueLimitKes: number | 'Unlimited';
+  displayLimit: string;
+  notes: string;
+}
+
+export interface SectorPack extends DataQualityRecord {
+  id: string;
+  label: string;
+  types: string[];
+  specialSystems: string[];
+  extraProfessionals?: string[];
+  keyApprovals: string[];
+  constructionSafetyNotes?: string[];
+  materialsHighlights?: string[];
+  documents?: string[];
+  milestoneTemplate: string[];
+}
+
+export interface SafetyPpeItem {
+  item: string;
+  spec: string;
+  when: string;
+}
+
+export interface SafetyProtocol {
+  hazard: string;
+  controls: string[];
+}
+
+export interface SiteDemarcationSign {
+  en: string;
+  sw: string;
+}
+
+export interface SafetyModule {
+  ppeMatrix: SafetyPpeItem[];
+  siteDemarcation: {
+    hoarding: string;
+    tape: string;
+    signage: SiteDemarcationSign[];
+    sanitation: string;
+  };
+  protocols: SafetyProtocol[];
+  digitalSafetyFeatures: string[];
+}
+
+export interface CementItem extends DataQualityRecord {
+  id: string;
+  brand: string;
+  product: string;
+  grade: '22.5' | '32.5' | '42.5' | string;
+  use: string;
+  unit: string;
+  priceKesMin: number;
+  priceKesMax: number;
+}
+
+export interface RebarSizeItem {
+  size: string;
+  use: string;
+  kesMin: number;
+  kesMax: number;
+  kgPerMetre: number; // formula: d^2 / 162
+}
+
+export interface AggregateWallingItem extends DataQualityRecord {
+  id: string;
+  item: string;
+  origin?: string;
+  unit: string;
+  kesMin: number;
+  kesMax: number;
+}
+
+export interface MachineryRateItem extends DataQualityRecord {
+  id: string;
+  tier: string;
+  equipment: string;
+  use: string;
+  rateKes: string;
+  unit: string;
+}
+
+export interface KnowledgeBaseData {
+  agencies: StatutoryAgency[];
+  documentChecklist: DocumentChecklistItem[];
+  feeSeeds: FeeScheduleItem[];
+  costPerSqmSeeds: CostPerSqmSeed[];
+  ncaClassLimits: NcaClassLimit[];
+  professionalsByTier: Record<string, string[]>;
+  sectorPacks: SectorPack[];
+  safety: SafetyModule;
+  cement: CementItem[];
+  reinforcementSteel: {
+    standard: string;
+    brandsListed: string[];
+    bulkKesPerTonne: { min: number; max: number } & DataQualityRecord;
+    retail12mBars: RebarSizeItem[];
+    calculators: { unitWeightKgPerMetre: string; note: string };
+  };
+  aggregatesAndWalling: AggregateWallingItem[];
+  machinery: MachineryRateItem[];
+}

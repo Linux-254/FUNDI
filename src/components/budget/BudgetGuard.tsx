@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Project, BudgetCategory, VariationOrder } from '../../types';
 import { api } from '../../lib/api';
+import { BudgetGuardAlert } from './BudgetGuardAlert';
 import { 
   AlertCircle, 
   TrendingUp, 
@@ -12,6 +13,8 @@ import {
   CheckCircle2,
   AlertTriangle
 } from 'lucide-react';
+
+export { BudgetGuardAlert };
 
 interface BudgetGuardProps {
   project: Project;
@@ -69,6 +72,9 @@ export const BudgetGuard: React.FC<BudgetGuardProps> = ({
 
   return (
     <div className="space-y-6">
+      
+      {/* Dynamic Budget Alert Banner */}
+      <BudgetGuardAlert project={project} currency={currency} />
       
       {/* Top Banner: Liquid-Fill Budget Gauge & Early Warning Center */}
       <div className="bg-white rounded-2xl p-6 sm:p-7 shadow-xs border border-[#2B4560]/15">

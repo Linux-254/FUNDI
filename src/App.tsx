@@ -16,6 +16,8 @@ import { InvestorDemoPage } from './pages/InvestorDemoPage';
 import { LegalPage } from './pages/LegalPage';
 import { SmartBriefWizardPage } from './pages/SmartBriefWizardPage';
 import { AdminConsolePage } from './pages/AdminConsolePage';
+import { KnowledgeBasePage } from './pages/KnowledgeBasePage';
+import { ProjectDashboardPage } from './pages/ProjectDashboardPage';
 import { api } from './lib/api';
 import { UserRole } from './types';
 import { Building2, Home, AlertCircle } from 'lucide-react';
@@ -54,8 +56,20 @@ export default function App() {
               element={<LandingPage currency={currency} onSelectRole={handleRoleChange} />} 
             />
             <Route 
+              path="/dashboard" 
+              element={<ProjectDashboardPage currency={currency} currentUserRole={currentRole} onSelectRole={handleRoleChange} />} 
+            />
+            <Route 
+              path="/projects" 
+              element={<ProjectDashboardPage currency={currency} currentUserRole={currentRole} onSelectRole={handleRoleChange} />} 
+            />
+            <Route 
               path="/marketplace" 
               element={<MarketplacePage currency={currency} />} 
+            />
+            <Route 
+              path="/knowledge-base" 
+              element={<KnowledgeBasePage />} 
             />
             <Route 
               path="/trust" 

@@ -7,7 +7,12 @@ import {
   AttendanceRecord, 
   VariationOrder, 
   ComplianceItem,
-  UserRole
+  UserRole,
+  KnowledgeBaseData,
+  FeeScheduleItem,
+  CementItem,
+  AggregateWallingItem,
+  MachineryRateItem
 } from '../types';
 import { 
   SEED_PROJECTS, 
@@ -16,6 +21,7 @@ import {
   SEED_SITE_LOGS, 
   SEED_ATTENDANCE 
 } from '../data/seedData';
+import { INITIAL_KNOWLEDGE_BASE } from '../data/knowledgeBaseData';
 
 const STORAGE_KEYS = {
   PROJECTS: 'fundi_projects_v1',
@@ -23,7 +29,8 @@ const STORAGE_KEYS = {
   SITE_LOGS: 'fundi_site_logs_v1',
   ATTENDANCE: 'fundi_attendance_v1',
   ACTIVE_ROLE: 'fundi_active_role_v1',
-  ACTIVE_CURRENCY: 'fundi_active_currency_v1'
+  ACTIVE_CURRENCY: 'fundi_active_currency_v1',
+  KNOWLEDGE_BASE: 'fundi_kb_v1'
 };
 
 class FundiApiAdapter {
@@ -31,6 +38,7 @@ class FundiApiAdapter {
   private transactions: EscrowTransaction[] = [];
   private siteLogs: SiteLogEntry[] = [];
   private attendance: AttendanceRecord[] = [];
+  private knowledgeBase: KnowledgeBaseData = INITIAL_KNOWLEDGE_BASE;
   private activeRole: UserRole = 'owner';
   private activeCurrency: 'KES' | 'USD' = 'KES';
 
@@ -41,7 +49,23 @@ class FundiApiAdapter {
   private init() {
     try {
       const storedProjects = localStorage.getItem(STORAGE_KEYS.PROJECTS);
-      this.projects = storedProjects ? JSON.parse(storedProjects) : JSON.parse(JSON.stringify(SEED_PROJECTS));
+      if (storedProjects) {
+        const parsed = JSON.parse(storedProjects);
+        SEED_PROJECTS.forEach(sp => {
+          const existing = parsed.find((p: any) => p.id === sp.id);
+          if (!existing) {
+            parsed.push(sp);
+          } else if ((!existing.milestones || existing.milestones.length === 0) && sp.milestones.length > 0) {
+            existing.milestones = sp.milestones;
+            existing.blueprintLayers = sp.blueprintLayers;
+            existing.budgetCategories = sp.budgetCategories;
+            existing.complianceItems = sp.complianceItems;
+          }
+        });
+        this.projects = parsed;
+      } else {
+        this.projects = JSON.parse(JSON.stringify(SEED_PROJECTS));
+      }
 
       const storedTxns = localStorage.getItem(STORAGE_KEYS.TRANSACTIONS);
       this.transactions = storedTxns ? JSON.parse(storedTxns) : JSON.parse(JSON.stringify(SEED_ESCROW_TRANSACTIONS));
@@ -51,6 +75,9 @@ class FundiApiAdapter {
 
       const storedAttendance = localStorage.getItem(STORAGE_KEYS.ATTENDANCE);
       this.attendance = storedAttendance ? JSON.parse(storedAttendance) : JSON.parse(JSON.stringify(SEED_ATTENDANCE));
+
+      const storedKb = localStorage.getItem(STORAGE_KEYS.KNOWLEDGE_BASE);
+      this.knowledgeBase = storedKb ? JSON.parse(storedKb) : JSON.parse(JSON.stringify(INITIAL_KNOWLEDGE_BASE));
 
       const storedRole = localStorage.getItem(STORAGE_KEYS.ACTIVE_ROLE);
       if (storedRole) this.activeRole = storedRole as UserRole;
@@ -62,6 +89,7 @@ class FundiApiAdapter {
       this.transactions = JSON.parse(JSON.stringify(SEED_ESCROW_TRANSACTIONS));
       this.siteLogs = JSON.parse(JSON.stringify(SEED_SITE_LOGS));
       this.attendance = JSON.parse(JSON.stringify(SEED_ATTENDANCE));
+      this.knowledgeBase = JSON.parse(JSON.stringify(INITIAL_KNOWLEDGE_BASE));
     }
   }
 
@@ -71,6 +99,7 @@ class FundiApiAdapter {
       localStorage.setItem(STORAGE_KEYS.TRANSACTIONS, JSON.stringify(this.transactions));
       localStorage.setItem(STORAGE_KEYS.SITE_LOGS, JSON.stringify(this.siteLogs));
       localStorage.setItem(STORAGE_KEYS.ATTENDANCE, JSON.stringify(this.attendance));
+      localStorage.setItem(STORAGE_KEYS.KNOWLEDGE_BASE, JSON.stringify(this.knowledgeBase));
       localStorage.setItem(STORAGE_KEYS.ACTIVE_ROLE, this.activeRole);
       localStorage.setItem(STORAGE_KEYS.ACTIVE_CURRENCY, this.activeCurrency);
     } catch (e) {
@@ -355,12 +384,143 @@ class FundiApiAdapter {
     return Promise.resolve(list);
   }
 
+  // --- Knowledge Base Methods ---
+  public async getKnowledgeBase(): Promise<KnowledgeBaseData> {
+    return Promise.resolve(this.knowledgeBase);
+  }
+
+  public async verifyKbRecord(
+    section: 'agencies' | 'documentChecklist' | 'feeSeeds' | 'costPerSqmSeeds' | 'cement' | 'aggregatesAndWalling' | 'machinery' | 'sectorPacks',
+    id: string,
+    newConfidence: 'medium' | 'high' = 'high',
+    verifiedBy: string = 'audit@fundi.build'
+  ): Promise<void> {
+    const today = new Date().toISOString().split('T')[0];
+
+    if (section === 'documentChecklist') {
+      const item = this.knowledgeBase.documentChecklist.find(d => d.id === id);
+      if (item) {
+        item.confidence = newConfidence;
+        item.lastVerifiedAt = today;
+        item.verifiedBy = verifiedBy;
+      }
+    } else if (section === 'feeSeeds') {
+      const item = this.knowledgeBase.feeSeeds.find(f => f.id === id);
+      if (item) {
+        item.confidence = newConfidence;
+        item.lastVerifiedAt = today;
+        item.verifiedBy = verifiedBy;
+      }
+    } else if (section === 'costPerSqmSeeds') {
+      const item = this.knowledgeBase.costPerSqmSeeds.find(c => c.id === id);
+      if (item) {
+        item.confidence = newConfidence;
+        item.lastVerifiedAt = today;
+        item.verifiedBy = verifiedBy;
+      }
+    } else if (section === 'cement') {
+      const item = this.knowledgeBase.cement.find(c => c.id === id);
+      if (item) {
+        item.confidence = newConfidence;
+        item.lastVerifiedAt = today;
+        item.verifiedBy = verifiedBy;
+      }
+    } else if (section === 'aggregatesAndWalling') {
+      const item = this.knowledgeBase.aggregatesAndWalling.find(a => a.id === id);
+      if (item) {
+        item.confidence = newConfidence;
+        item.lastVerifiedAt = today;
+        item.verifiedBy = verifiedBy;
+      }
+    } else if (section === 'machinery') {
+      const item = this.knowledgeBase.machinery.find(m => m.id === id);
+      if (item) {
+        item.confidence = newConfidence;
+        item.lastVerifiedAt = today;
+        item.verifiedBy = verifiedBy;
+      }
+    } else if (section === 'sectorPacks') {
+      const item = this.knowledgeBase.sectorPacks.find(s => s.id === id);
+      if (item) {
+        item.confidence = newConfidence;
+        item.lastVerifiedAt = today;
+        item.verifiedBy = verifiedBy;
+      }
+    }
+
+    this.persist();
+    return Promise.resolve();
+  }
+
+  public async updateFeeScheduleItem(id: string, updates: Partial<FeeScheduleItem>): Promise<void> {
+    const idx = this.knowledgeBase.feeSeeds.findIndex(f => f.id === id);
+    if (idx !== -1) {
+      this.knowledgeBase.feeSeeds[idx] = { ...this.knowledgeBase.feeSeeds[idx], ...updates };
+      this.persist();
+    }
+    return Promise.resolve();
+  }
+
+  public async updateMaterialItem(category: 'cement' | 'aggregates', id: string, updates: any): Promise<void> {
+    if (category === 'cement') {
+      const idx = this.knowledgeBase.cement.findIndex(c => c.id === id);
+      if (idx !== -1) {
+        this.knowledgeBase.cement[idx] = { ...this.knowledgeBase.cement[idx], ...updates };
+        this.persist();
+      }
+    } else {
+      const idx = this.knowledgeBase.aggregatesAndWalling.findIndex(a => a.id === id);
+      if (idx !== -1) {
+        this.knowledgeBase.aggregatesAndWalling[idx] = { ...this.knowledgeBase.aggregatesAndWalling[idx], ...updates };
+        this.persist();
+      }
+    }
+    return Promise.resolve();
+  }
+
+  public async updateMachineryItem(id: string, updates: Partial<MachineryRateItem>): Promise<void> {
+    const idx = this.knowledgeBase.machinery.findIndex(m => m.id === id);
+    if (idx !== -1) {
+      this.knowledgeBase.machinery[idx] = { ...this.knowledgeBase.machinery[idx], ...updates };
+      this.persist();
+    }
+    return Promise.resolve();
+  }
+
+  // Steel unit weight formula: d^2 / 162 kg/m per BS 4449
+  public calculateSteelWeight(diameterMm: number, lengthM: number = 12): { kgPerMetre: number; totalWeightKg: number } {
+    const kgPerMetre = Number(((diameterMm * diameterMm) / 162).toFixed(3));
+    const totalWeightKg = Number((kgPerMetre * lengthM).toFixed(2));
+    return { kgPerMetre, totalWeightKg };
+  }
+
+  // Statutory NCA Levy formula: 0.5% on construction contract value exceeding KES 5,000,000
+  public calculateNcaLevy(projectValueKes: number): { levyKes: number; rate: number; isApplicable: boolean; rule: string } {
+    const THRESHOLD = 5000000;
+    if (projectValueKes <= THRESHOLD) {
+      return {
+        levyKes: 0,
+        rate: 0,
+        isApplicable: false,
+        rule: 'Contracts of KES 5,000,000 or below are exempt from the 0.5% NCA construction levy.'
+      };
+    }
+    const levyKes = Math.round(projectValueKes * 0.005);
+    return {
+      levyKes,
+      rate: 0.005,
+      isApplicable: true,
+      rule: '0.5% of total contract value applies for projects above KES 5,000,000 (NCA Act Cap 449A / Legal Notice).'
+    };
+  }
+
   // --- Reset to seed ---
   public resetToSeed() {
     this.projects = JSON.parse(JSON.stringify(SEED_PROJECTS));
     this.transactions = JSON.parse(JSON.stringify(SEED_ESCROW_TRANSACTIONS));
     this.siteLogs = JSON.parse(JSON.stringify(SEED_SITE_LOGS));
     this.attendance = JSON.parse(JSON.stringify(SEED_ATTENDANCE));
+    this.knowledgeBase = JSON.parse(JSON.stringify(INITIAL_KNOWLEDGE_BASE));
     this.persist();
   }
 }

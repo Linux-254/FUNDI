@@ -7,6 +7,7 @@ import { ProjectBlueprint } from '../components/blueprint/ProjectBlueprint';
 import { EscrowVault } from '../components/escrow/EscrowVault';
 import { BudgetGuard } from '../components/budget/BudgetGuard';
 import { ComplianceEngine } from '../components/compliance/ComplianceEngine';
+import { ComplianceChecklist } from '../components/compliance/ComplianceChecklist';
 import { SiteLogAttendance } from '../components/site/SiteLogAttendance';
 import { InstantEstimator } from '../components/estimator/InstantEstimator';
 import { 
@@ -279,7 +280,10 @@ export const ProjectWorkspacePage: React.FC<ProjectWorkspacePageProps> = ({
 
             {/* 5. Approvals & Compliance */}
             {(activeSection === 'compliance' || activeSection.startsWith('compliance-')) && (
-              <ComplianceEngine project={project} onProjectUpdated={loadProject} />
+              <div className="space-y-6">
+                <ComplianceChecklist project={project} onProjectUpdated={loadProject} />
+                <ComplianceEngine project={project} onProjectUpdated={loadProject} />
+              </div>
             )}
 
             {/* 8. Budget Guard & Escrow */}
