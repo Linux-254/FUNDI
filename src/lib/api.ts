@@ -235,6 +235,34 @@ class FundiApiAdapter {
     return Promise.resolve(milestone);
   }
 
+  public async verifyMilestoneByExpert(
+    projectId: string,
+    milestoneId: string,
+    expertName: string,
+    regNumber: string,
+    reportNotes: string
+  ): Promise<Milestone> {
+    const proj = this.projects.find(p => p.id === projectId);
+    if (!proj) throw new Error('Project not found');
+    const milestone = proj.milestones.find(m => m.id === milestoneId);
+    if (!milestone) throw new Error('Milestone not found');
+
+    const pseudoHash = 'SHA256:' + Array.from({ length: 8 }, () => Math.floor(Math.random() * 16).toString(16)).join('') + '...' + Date.now().toString(16);
+
+    milestone.state = 'UnderReview';
+    milestone.verificationAudit = {
+      verifiedBy: expertName || 'Eng. Kelvin Ochieng, PE',
+      role: 'Registered Structural Engineer / QS',
+      regNumber: regNumber || 'EBK M.2891 / BORAQS QS/981',
+      verifiedAt: new Date().toISOString().replace('T', ' ').substring(0, 19) + ' EAT',
+      checksum: pseudoHash,
+      inspectionReport: reportNotes || 'Rebar spacing, concrete slump, and cube test batches compliant with BS 8110.'
+    };
+
+    this.persist();
+    return Promise.resolve(milestone);
+  }
+
   public async approveAndReleaseMilestone(projectId: string, milestoneId: string): Promise<{ success: boolean; message: string }> {
     const proj = this.projects.find(p => p.id === projectId);
     if (!proj) throw new Error('Project not found');

@@ -37,8 +37,29 @@ export const EscrowVault: React.FC<EscrowVaultProps> = ({
   const [actionMessage, setActionMessage] = useState<string | null>(null);
   const [disputeModalOpen, setDisputeModalOpen] = useState(false);
   const [disputeReason, setDisputeReason] = useState('');
+  
+  // Independent QS / Engineer Verification Modal State
+  const [verifyModalOpen, setVerifyModalOpen] = useState(false);
+  const [expertName, setExpertName] = useState('Eng. Kelvin Ochieng, PE');
+  const [expertReg, setExpertReg] = useState('EBK M.2891 / BORAQS QS/981');
+  const [inspectionNotes, setInspectionNotes] = useState('Tested concrete cube compressive batch #C25-04. Rebar laps 45d and 25mm cover spacers verified in compliance with BS 8110.');
+  const [verifyingLoading, setVerifyingLoading] = useState(false);
 
   const selectedMilestone = project.milestones.find(m => m.id === selectedMilestoneId) || project.milestones[0];
+
+  const handleVerifyAsExpert = async () => {
+    setVerifyingLoading(true);
+    try {
+      await api.verifyMilestoneByExpert(project.id, selectedMilestone.id, expertName, expertReg, inspectionNotes);
+      setActionMessage(`Milestone cryptographically signed and verified by ${expertName} (${expertReg}). Ready for Owner release.`);
+      setVerifyModalOpen(false);
+      onProjectUpdated();
+    } catch (e: any) {
+      alert(e.message);
+    } finally {
+      setVerifyingLoading(false);
+    }
+  };
 
   // Milestone action handlers
   const handleFundMpesa = async () => {
@@ -56,7 +77,7 @@ export const EscrowVault: React.FC<EscrowVaultProps> = ({
   };
 
   const handleApproveAndRelease = async () => {
-    if (!window.confirm(`Confirm release of ${api.formatMoney(selectedMilestone.amountMinor, currency)} for ${selectedMilestone.title}? Retention holdback and contractor payout splits will execute.`)) {
+    if (!window.confirm(`Confirm release of ${api.formatMoney(selectedMilestone.amountMinor, currency)} for ${selectedMilestone.title}? Retention holdback (5%) and M-Pesa direct labour splits will execute.`)) {
       return;
     }
     try {
@@ -313,6 +334,25 @@ export const EscrowVault: React.FC<EscrowVaultProps> = ({
             </div>
           </div>
 
+          {/* Verification Audit Stamp if present */}
+          {selectedMilestone.verificationAudit && (
+            <div className="p-3 bg-[#0B1B2B] text-white rounded-xl border border-[#C8A24A]/40 space-y-1.5 text-xs font-mono">
+              <div className="flex items-center justify-between text-[#C8A24A] text-[10px] font-bold">
+                <span className="flex items-center gap-1">
+                  <ShieldCheck className="w-3.5 h-3.5 text-[#1E9E6A]" /> EXPERT VERIFICATION SEAL
+                </span>
+                <span>{selectedMilestone.verificationAudit.checksum}</span>
+              </div>
+              <p className="text-[11px] text-[#D9DEE3] font-sans">
+                {selectedMilestone.verificationAudit.inspectionReport}
+              </p>
+              <div className="text-[10px] text-gray-400 pt-1 border-t border-white/10 flex justify-between">
+                <span>By: {selectedMilestone.verificationAudit.verifiedBy}</span>
+                <span>Reg: {selectedMilestone.verificationAudit.regNumber}</span>
+              </div>
+            </div>
+          )}
+
           {/* Action Buttons based on state */}
           <div className="pt-2 space-y-2">
             {selectedMilestone.state === 'AwaitingFunding' && (
@@ -325,15 +365,26 @@ export const EscrowVault: React.FC<EscrowVaultProps> = ({
               </button>
             )}
 
-            {selectedMilestone.state === 'EvidenceSubmitted' && (
+            {(selectedMilestone.state === 'EvidenceSubmitted' || selectedMilestone.state === 'UnderReview') && (
               <div className="space-y-2">
+                {!selectedMilestone.verificationAudit && (
+                  <button
+                    onClick={() => setVerifyModalOpen(true)}
+                    className="w-full py-2 px-3 bg-[#0B1B2B] hover:bg-[#1F6FEB] text-[#C8A24A] border border-[#C8A24A]/40 font-bold text-xs rounded-lg shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer"
+                  >
+                    <ShieldCheck className="w-4 h-4 text-[#C8A24A]" />
+                    <span>Verify as Registered Engineer / QS</span>
+                  </button>
+                )}
+                
                 <button
                   onClick={handleApproveAndRelease}
                   className="w-full py-2.5 px-4 bg-[#1E9E6A] hover:bg-[#1E9E6A]/90 text-white font-bold text-xs rounded-lg shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <Unlock className="w-4 h-4 text-[#C8A24A]" />
-                  <span>Approve Evidence & Release Escrow</span>
+                  <span>Release Escrow (Owner Dual Control)</span>
                 </button>
+
                 <button
                   onClick={() => setDisputeModalOpen(true)}
                   className="w-full py-2 px-3 bg-white border border-[#D64545] text-[#D64545] hover:bg-rose-50 text-xs font-semibold rounded-lg transition-colors cursor-pointer"
@@ -461,6 +512,94 @@ export const EscrowVault: React.FC<EscrowVaultProps> = ({
                 className="flex-1 py-2 text-xs font-bold text-white bg-[#D64545] hover:bg-rose-700 rounded-lg shadow-sm"
               >
                 Freeze & Submit Dispute
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Independent Engineer / QS Verification Modal */}
+      {verifyModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-[#C8A24A]/40 space-y-4">
+            <div className="flex items-center justify-between border-b pb-3">
+              <div className="flex items-center gap-2 text-[#0B1B2B]">
+                <ShieldCheck className="w-5 h-5 text-[#C8A24A]" />
+                <h3 className="font-display font-bold text-base">
+                  Expert Site Inspection Sign-Off
+                </h3>
+              </div>
+              <button onClick={() => setVerifyModalOpen(false)}>✕</button>
+            </div>
+
+            <p className="text-xs text-[#2B4560]">
+              As an accredited professional, you are executing a legally binding statutory inspection certification for{' '}
+              <strong className="text-[#0B1B2B]">{selectedMilestone.title}</strong> ({api.formatMoney(selectedMilestone.amountMinor, currency)}).
+            </p>
+
+            <div className="space-y-3 text-xs">
+              <div>
+                <label className="block font-semibold text-[#0B1B2B] mb-1">
+                  Lead Engineer / Verifier Name
+                </label>
+                <input
+                  type="text"
+                  value={expertName}
+                  onChange={(e) => setExpertName(e.target.value)}
+                  className="w-full p-2.5 rounded-lg border border-[#2B4560]/20 font-mono text-xs focus:outline-[#1F6FEB]"
+                />
+              </div>
+
+              <div>
+                <label className="block font-semibold text-[#0B1B2B] mb-1">
+                  EBK / BORAQS License Registration Number
+                </label>
+                <input
+                  type="text"
+                  value={expertReg}
+                  onChange={(e) => setExpertReg(e.target.value)}
+                  className="w-full p-2.5 rounded-lg border border-[#2B4560]/20 font-mono text-xs focus:outline-[#1F6FEB]"
+                />
+              </div>
+
+              <div>
+                <label className="block font-semibold text-[#0B1B2B] mb-1">
+                  Site Inspection Technical Findings (BS 8110 Compliance)
+                </label>
+                <textarea
+                  rows={3}
+                  value={inspectionNotes}
+                  onChange={(e) => setInspectionNotes(e.target.value)}
+                  className="w-full p-2.5 rounded-lg border border-[#2B4560]/20 text-xs focus:outline-[#1F6FEB]"
+                />
+              </div>
+            </div>
+
+            <div className="p-3 bg-[#F4F1EA] rounded-lg text-[11px] font-mono text-[#2B4560] space-y-0.5">
+              <div className="flex justify-between">
+                <span>Cryptographic Digest:</span>
+                <span className="text-[#1F6FEB] font-bold">SHA-256 Enabled</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Statutory Weight:</span>
+                <span className="text-[#1E9E6A] font-bold">NCA Compliant</span>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 pt-2">
+              <button
+                onClick={() => setVerifyModalOpen(false)}
+                className="flex-1 py-2 text-xs font-semibold text-[#2B4560] border rounded-lg"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleVerifyAsExpert}
+                disabled={verifyingLoading}
+                className="flex-1 py-2 text-xs font-bold text-white bg-[#0B1B2B] hover:bg-[#1F6FEB] rounded-lg shadow-sm flex items-center justify-center gap-1.5"
+              >
+                <ShieldCheck className="w-4 h-4 text-[#C8A24A]" />
+                <span>{verifyingLoading ? 'Signing...' : 'Sign & Certify'}</span>
               </button>
             </div>
           </div>

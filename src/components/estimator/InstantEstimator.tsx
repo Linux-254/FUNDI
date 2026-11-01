@@ -77,15 +77,7 @@ export const InstantEstimator: React.FC<InstantEstimatorProps> = ({ currency }) 
     <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-[#2B4560]/15 relative">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#2B4560]/10 pb-4">
         <div>
-          <div className="flex items-center gap-2">
-            <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-[#1F6FEB]">
-              KENYA CONSTRUCTION RATE-CARD MODEL
-            </span>
-            <span className="text-[10px] px-2 py-0.5 rounded bg-[#1F6FEB]/10 text-[#1F6FEB] font-mono">
-              Q4 2026 IQSK/BORAQS Benchmarks
-            </span>
-          </div>
-          <h3 className="font-display text-xl sm:text-2xl font-bold text-[#0B1B2B] mt-1">
+          <h3 className="font-display text-xl sm:text-2xl font-bold text-[#0B1B2B]">
             Instant Building Cost Estimator
           </h3>
           <p className="text-xs text-[#2B4560]/70 mt-0.5">

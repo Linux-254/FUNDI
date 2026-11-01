@@ -2,11 +2,19 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Building2, ShieldCheck, Scale, Lock, Landmark } from 'lucide-react';
 
+import { BrandLogo } from '../brand/BrandLogo';
+
 export const Footer: React.FC = () => {
   return (
-    <footer className="bg-[#0B1B2B] text-[#D9DEE3] border-t border-[#2B4560]/30 pt-16 pb-12">
+    <footer className="bg-[#0B1B2B] text-[#D9DEE3] border-t border-[#2B4560]/30 pt-16 pb-12 w-full max-w-full overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
+        {/* Brand Header & Acronym Banner */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-8 mb-8 border-b border-[#2B4560]/30 gap-4">
+          <BrandLogo theme="dark" variant="full" />
+          <BrandLogo variant="stamp" />
+        </div>
+
         {/* Acronym Banner & Core Thesis */}
         <div className="bg-[#2B4560]/20 rounded-xl p-6 sm:p-8 border border-[#2B4560]/30 mb-12">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -50,12 +58,13 @@ export const Footer: React.FC = () => {
             <h4 className="text-xs font-semibold text-white uppercase tracking-wider mb-4">Workspace & Platform</h4>
             <ul className="space-y-2.5 text-xs text-[#D9DEE3]/80">
               <li><Link to="/dashboard" className="hover:text-white transition-colors font-medium">Projects Dashboard</Link></li>
+              <li><Link to="/blueprint" className="hover:text-[#1F6FEB] transition-colors font-semibold text-white">CAD Architectural Blueprints</Link></li>
+              <li><Link to="/skills" className="hover:text-[#C8A24A] transition-colors font-semibold text-white">Trade Skills & NCA Matrix</Link></li>
+              <li><Link to="/instagram" className="hover:text-[#1E9E6A] transition-colors font-semibold text-white">Site Instagram Live Feed</Link></li>
               <li><Link to="/app/projects/proj-karen-villa" className="hover:text-white transition-colors">Karen Villa Workspace</Link></li>
               <li><Link to="/knowledge-base" className="hover:text-white transition-colors text-[#C8A24A] font-semibold">Sector Packs & Knowledge Base</Link></li>
               <li><Link to="/marketplace" className="hover:text-white transition-colors">Contractors & Experts</Link></li>
-              <li><Link to="/marketplace?tab=materials" className="hover:text-white transition-colors">Materials & Plant Hire</Link></li>
               <li><Link to="/trust" className="hover:text-white transition-colors">Escrow State Machine</Link></li>
-              <li><Link to="/pricing" className="hover:text-white transition-colors">Transparent Pricing</Link></li>
             </ul>
           </div>
 
@@ -99,13 +108,6 @@ export const Footer: React.FC = () => {
           </p>
           <div className="flex flex-col sm:flex-row sm:items-center justify-between pt-4 gap-4 text-[#D9DEE3]/50">
             <p>© {new Date().getFullYear()} FUNDI Technology Ltd. All rights reserved. Registered in Kenya under the Companies Act 2015.</p>
-            <div className="flex items-center gap-4">
-              <span>Security audited</span>
-              <span>·</span>
-              <span>WCAG 2.2 AA compliant</span>
-              <span>·</span>
-              <span>Encrypted at rest</span>
-            </div>
           </div>
         </div>
 

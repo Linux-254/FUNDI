@@ -13,7 +13,9 @@ import {
   Camera, 
   FolderLock, 
   MessageSquare, 
-  AlertTriangle 
+  AlertTriangle,
+  Activity,
+  Radio
 } from 'lucide-react';
 
 export interface TOCSection {
@@ -166,6 +168,19 @@ export const TOCNavigation: React.FC<TOCNavigationProps> = ({
       number: '12',
       title: 'Dispute Mediation & ADR',
       icon: <AlertTriangle className="w-4 h-4 text-[#D64545]" />
+    },
+    {
+      id: 'iot-health',
+      number: '13',
+      title: 'Site IoT & Structural Health',
+      icon: <Activity className="w-4 h-4 text-[#00E5FF]" />,
+      badge: 'Live',
+      children: [
+        { id: 'iot-moisture', number: '13.1', title: 'Slab Curing RH% (ASTM F2170)' },
+        { id: 'iot-temp', number: '13.2', title: 'Hydration Thermal Gradient ΔT' },
+        { id: 'iot-maturity', number: '13.3', title: 'Concrete Maturity Index (MPa)' },
+        { id: 'iot-stress', number: '13.4', title: 'Rebar Stress & Load Gauges' }
+      ]
     }
   ];
 

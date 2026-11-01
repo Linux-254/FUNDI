@@ -1,0 +1,10 @@
+# FUNDI Robots Configuration
+# https://fundi.co.ke
+
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /api/
+
+# Sitemaps
+Sitemap: https://fundi.co.ke/sitemap.xml

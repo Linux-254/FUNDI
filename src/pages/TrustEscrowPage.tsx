@@ -13,7 +13,7 @@ import {
 
 export const TrustEscrowPage: React.FC = () => {
   return (
-    <div className="min-h-screen bg-[#F4F1EA] py-10 sm:py-16">
+    <div className="min-h-screen bg-[#F4F1EA] py-10 sm:py-16 w-full max-w-full overflow-x-hidden min-w-0">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         
         {/* Header */}

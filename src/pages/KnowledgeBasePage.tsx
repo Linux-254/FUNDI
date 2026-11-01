@@ -141,7 +141,7 @@ export const KnowledgeBasePage: React.FC = () => {
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-2 border-b border-[#2B4560]/15 text-xs font-semibold">
+        <div className="flex items-center gap-2 w-full max-w-full overflow-x-auto scrollbar-none pb-2 border-b border-[#2B4560]/15 text-xs font-semibold shrink-0">
           {[
             { id: 'sectors', label: '12 Sector Packs & Approvals', icon: Layers },
             { id: 'nca', label: 'NCA Class Limits & 0.5% Levy', icon: Scale },
@@ -180,10 +180,18 @@ export const KnowledgeBasePage: React.FC = () => {
               </span>
               <div className="bg-white rounded-xl border border-[#2B4560]/15 shadow-2xs divide-y divide-[#2B4560]/10 max-h-[640px] overflow-y-auto">
                 {kb.sectorPacks.map(sector => (
-                  <button
+                  <div
                     key={sector.id}
+                    role="button"
+                    tabIndex={0}
                     onClick={() => setSelectedSectorId(sector.id)}
-                    className={`w-full text-left p-3.5 flex items-start justify-between gap-2 transition-colors cursor-pointer ${
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        setSelectedSectorId(sector.id);
+                      }
+                    }}
+                    className={`w-full text-left p-3.5 flex items-start justify-between gap-2 transition-colors cursor-pointer select-none ${
                       selectedSectorId === sector.id 
                         ? 'bg-[#1F6FEB]/10 border-l-4 border-[#1F6FEB]' 
                         : 'hover:bg-[#F4F1EA]/60'
@@ -198,7 +206,7 @@ export const KnowledgeBasePage: React.FC = () => {
                       </span>
                     </div>
                     <IndicativeBadge record={sector} size="xs" />
-                  </button>
+                  </div>
                 ))}
               </div>
             </div>

@@ -10,6 +10,7 @@ import { ComplianceEngine } from '../components/compliance/ComplianceEngine';
 import { ComplianceChecklist } from '../components/compliance/ComplianceChecklist';
 import { SiteLogAttendance } from '../components/site/SiteLogAttendance';
 import { InstantEstimator } from '../components/estimator/InstantEstimator';
+import { IoTHealth } from '../components/iot/IoTHealth';
 import { 
   Building2, 
   MapPin, 
@@ -21,7 +22,9 @@ import {
   FileText,
   AlertTriangle,
   Users,
-  Briefcase
+  Briefcase,
+  Activity,
+  Radio
 } from 'lucide-react';
 
 interface ProjectWorkspacePageProps {
@@ -129,10 +132,10 @@ export const ProjectWorkspacePage: React.FC<ProjectWorkspacePageProps> = ({
         </div>
 
         {/* Workspace Layout: Word-style TOC on Left (Col-span-3), Dynamic Section on Right (Col-span-9) */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start w-full min-w-0">
           
           {/* Left Column: Word-Style Table of Contents (TOC) */}
-          <div className="lg:col-span-3 sticky top-20">
+          <div className="lg:col-span-3 min-w-0 sticky top-20">
             <TOCNavigation
               activeSection={activeSection}
               onSelectSection={(secId) => {
@@ -154,7 +157,7 @@ export const ProjectWorkspacePage: React.FC<ProjectWorkspacePageProps> = ({
           </div>
 
           {/* Right Column: Dynamic Section Views */}
-          <div className="lg:col-span-9 space-y-6">
+          <div className="lg:col-span-9 min-w-0 space-y-6">
             
             {/* 1. Overview & Project Blueprint */}
             {(activeSection === 'overview' || activeSection === 'overview-blueprint' || activeSection === 'overview-kpi') && (
@@ -396,6 +399,11 @@ export const ProjectWorkspacePage: React.FC<ProjectWorkspacePageProps> = ({
                   <span>Zero active disputes on this project. All released milestones were verified and settled amicably.</span>
                 </div>
               </div>
+            )}
+
+            {/* 13. Site IoT & Structural Sensor Health */}
+            {(activeSection === 'iot-health' || activeSection.startsWith('iot-')) && (
+              <IoTHealth project={project} currency={currency} />
             )}
 
           </div>

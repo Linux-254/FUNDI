@@ -13,6 +13,8 @@ import {
 import { api } from '../../lib/api';
 import { UserRole } from '../../types';
 
+import { BrandLogo } from '../brand/BrandLogo';
+
 interface NavbarProps {
   currentRole: UserRole;
   onRoleChange: (role: UserRole) => void;
@@ -42,16 +44,18 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   const navLinks = [
     { label: 'Dashboard', path: '/dashboard' },
-    { label: 'Workspace', path: '/app/projects/proj-karen-villa' },
+    { label: 'Blueprint Studio', path: '/blueprint' },
     { label: 'Marketplace', path: '/marketplace' },
-    { label: 'Knowledge Base', path: '/knowledge-base' },
+    { label: 'Dream to Blueprint', path: '/app/projects/new' },
+    { label: 'Site Feed', path: '/instagram' },
+    { label: 'Trade Skills', path: '/skills' },
     { label: 'Escrow & Trust', path: '/trust' },
-    { label: 'Pricing', path: '/pricing' }
+    { label: 'Knowledge Base', path: '/knowledge-base' }
   ];
 
   const isActive = (path: string) => {
     if (path === '/dashboard' && (location.pathname === '/dashboard' || location.pathname === '/projects')) return true;
-    if (path.startsWith('/app/projects') && location.pathname.startsWith('/app/projects')) return true;
+    if (path.startsWith('/app/projects') && location.pathname === path) return true;
     return location.pathname === path;
   };
 
@@ -60,32 +64,22 @@ export const Navbar: React.FC<NavbarProps> = ({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 gap-4">
           
-          {/* Zone 1: Brand Wordmark */}
+          {/* Zone 1: Bespoke Brand Wordmark & Architectural Seal */}
           <div className="flex items-center gap-3 shrink-0">
             <Link to="/" className="flex items-center gap-2 group">
-              <div className="w-9 h-9 rounded-lg bg-[#0B1B2B] flex items-center justify-center text-white font-bold tracking-wider shadow-sm group-hover:bg-[#1F6FEB] transition-colors">
-                <Building2 className="w-5 h-5 text-[#C8A24A]" />
-              </div>
-              <div className="flex flex-col">
-                <span className="font-display font-extrabold text-xl tracking-tight text-[#0B1B2B]">
-                  FUNDI<span className="text-[#1F6FEB]">.</span>
-                </span>
-                <span className="text-[10px] font-medium tracking-wide text-[#2B4560]/70 uppercase -mt-1 hidden sm:block">
-                  Build with certainty
-                </span>
-              </div>
+              <BrandLogo variant="full" />
             </Link>
           </div>
 
           {/* Zone 2: Navigation Links (Clean, Single Line, No Pills) */}
-          <nav className="hidden md:flex items-center gap-6 lg:gap-8">
+          <nav className="hidden xl:flex items-center gap-4 2xl:gap-5.5">
             {navLinks.map((item) => (
               <Link
                 key={item.path}
                 to={item.path}
-                className={`text-sm font-medium tracking-tight whitespace-nowrap transition-colors py-1 ${
+                className={`text-xs 2xl:text-sm font-medium tracking-tight whitespace-nowrap transition-colors py-1 ${
                   isActive(item.path)
-                    ? 'text-[#1F6FEB] font-semibold border-b-2 border-[#1F6FEB]'
+                    ? 'text-[#1F6FEB] font-bold border-b-2 border-[#1F6FEB]'
                     : 'text-[#2B4560] hover:text-[#0B1B2B]'
                 }`}
               >
@@ -95,11 +89,11 @@ export const Navbar: React.FC<NavbarProps> = ({
           </nav>
 
           {/* Zone 3: Currency, Role Selector & Primary Action */}
-          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+          <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
             {/* Currency toggle for diaspora users */}
             <button
               onClick={onCurrencyToggle}
-              className="px-2.5 py-1 text-xs font-mono font-semibold rounded-md border border-[#2B4560]/20 bg-white/80 hover:bg-white text-[#0B1B2B] shadow-2xs transition-colors flex items-center gap-1 cursor-pointer"
+              className="px-2 sm:px-2.5 py-1 text-xs font-mono font-semibold rounded-md border border-[#2B4560]/20 bg-white/80 hover:bg-white text-[#0B1B2B] shadow-2xs transition-colors flex items-center gap-1 cursor-pointer"
               title="Toggle between KES and USD for Diaspora owners"
             >
               <DollarSign className="w-3.5 h-3.5 text-[#C8A24A]" />
@@ -110,10 +104,10 @@ export const Navbar: React.FC<NavbarProps> = ({
             <div className="relative">
               <button
                 onClick={() => setShowRoleMenu(!showRoleMenu)}
-                className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md border border-[#2B4560]/20 bg-white hover:bg-[#F4F1EA] text-[#0B1B2B] transition-colors cursor-pointer shadow-2xs"
+                className="hidden lg:flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium rounded-md border border-[#2B4560]/20 bg-white hover:bg-[#F4F1EA] text-[#0B1B2B] transition-colors cursor-pointer shadow-2xs"
               >
                 <Users className="w-3.5 h-3.5 text-[#1F6FEB]" />
-                <span className="max-w-[120px] truncate">{roleLabels[currentRole]}</span>
+                <span className="max-w-[110px] truncate">{roleLabels[currentRole]}</span>
                 <ChevronDown className="w-3 h-3 text-[#2B4560]/60" />
               </button>
 
@@ -144,16 +138,17 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* Primary Action Button */}
             <Link
               to="/app/projects/proj-karen-villa"
-              className="px-4 py-2 text-xs sm:text-sm font-semibold text-white bg-[#0B1B2B] hover:bg-[#1F6FEB] rounded-lg shadow-sm transition-all whitespace-nowrap shrink-0 flex items-center gap-1.5"
+              className="px-2.5 sm:px-3.5 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold text-white bg-[#0B1B2B] hover:bg-[#1F6FEB] rounded-lg shadow-sm transition-all whitespace-nowrap shrink-0 flex items-center gap-1.5"
             >
               <Briefcase className="w-3.5 h-3.5 text-[#C8A24A]" />
-              <span>Project Workspace</span>
+              <span className="hidden sm:inline">Project Workspace</span>
+              <span className="sm:hidden">Workspace</span>
             </Link>
 
             {/* Mobile menu hamburger */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-1.5 rounded-md text-[#2B4560] md:hidden hover:bg-black/5"
+              className="p-1.5 rounded-md text-[#2B4560] xl:hidden hover:bg-black/5"
               aria-label="Toggle Navigation"
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -164,7 +159,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-t border-[#2B4560]/10 bg-[#F4F1EA] px-4 pt-3 pb-5 space-y-3">
+        <div className="xl:hidden border-t border-[#2B4560]/10 bg-[#F4F1EA] px-4 pt-3 pb-5 space-y-3 max-h-[80vh] overflow-y-auto">
           <div className="flex flex-col space-y-1">
             {navLinks.map((item) => (
               <Link

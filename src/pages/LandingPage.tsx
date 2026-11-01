@@ -13,8 +13,12 @@ import {
   Briefcase,
   Star,
   MapPin,
-  FileCheck
+  FileCheck,
+  Compass,
+  Layers,
+  Camera
 } from 'lucide-react';
+import { BrandLogo } from '../components/brand/BrandLogo';
 import { ScrollBuiltBuilding } from '../components/building/ScrollBuiltBuilding';
 import { InstantEstimator } from '../components/estimator/InstantEstimator';
 import { SEED_MARKETPLACE_ENTITIES } from '../data/seedData';
@@ -34,16 +38,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({ currency, onSelectRole
   };
 
   return (
-    <div className="space-y-16 pb-20">
+    <div className="w-full max-w-full overflow-x-hidden space-y-16 pb-20">
       
       {/* 1. HERO SECTION: Brand Promise + Scroll-Built Elevation Drawing */}
       <section className="pt-8 sm:pt-14 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="text-center max-w-3xl mx-auto space-y-4 mb-10">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#1F6FEB]/10 border border-[#1F6FEB]/20 text-[#1F6FEB] text-xs font-mono font-semibold">
-            <ShieldCheck className="w-4 h-4 text-[#C8A24A]" />
-            <span>KENYA'S FIRST EVIDENCE-BASED CONSTRUCTION ESCROW</span>
-          </div>
-
           <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold text-[#0B1B2B] tracking-tight text-balance leading-tight">
             Build with certainty.<br />
             <span className="text-[#1F6FEB]">From first beacon</span> to handover.
@@ -78,10 +77,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ currency, onSelectRole
       {/* 2. THE FOUR DOORS ONBOARDING CONCEPT */}
       <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="text-center max-w-2xl mx-auto mb-8">
-          <span className="text-xs font-mono font-bold uppercase tracking-wider text-[#1F6FEB]">
-            TAILORED ONBOARDING PATHWAYS
-          </span>
-          <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#0B1B2B] mt-1">
+          <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#0B1B2B]">
             Four doors into the FUNDI network.
           </h2>
           <p className="text-xs sm:text-sm text-[#2B4560]/70 mt-1">
@@ -193,6 +189,89 @@ export const LandingPage: React.FC<LandingPageProps> = ({ currency, onSelectRole
         </div>
       </section>
 
+      {/* ARCHITECTURAL RIGOR, CAD BLUEPRINTS & SITE EVIDENCE SHOWCASE */}
+      <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <div className="bg-[#07131F] text-white rounded-3xl p-6 sm:p-10 border border-[#2B4560]/50 shadow-2xl relative overflow-hidden">
+          <div className="flex flex-col lg:flex-row lg:items-end justify-between pb-8 border-b border-[#2B4560]/60 gap-4">
+            <div>
+              <h2 className="text-2xl sm:text-3xl font-bold font-display text-white">
+                Architectural blueprints meet ironclad financial custody.
+              </h2>
+            </div>
+            
+            <BrandLogo variant="stamp" />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+            {/* Card 1: CAD Blueprint */}
+            <Link
+              to="/blueprint"
+              className="p-5 rounded-2xl bg-[#0B1B2B] border border-[#2B4560]/60 hover:border-[#1F6FEB] transition-all group flex flex-col justify-between"
+            >
+              <div className="space-y-3">
+                <div className="w-10 h-10 rounded-xl bg-[#1F6FEB]/20 text-[#1F6FEB] flex items-center justify-center group-hover:scale-105 transition-transform">
+                  <Compass className="w-5 h-5 text-[#C8A24A]" />
+                </div>
+                <h3 className="font-display font-bold text-base text-white group-hover:text-[#1F6FEB] transition-colors">
+                  Structural Plans & Section Cuts
+                </h3>
+                <p className="text-xs text-[#D9DEE3]/70 leading-relaxed">
+                  Inspect foundation footings, reinforced concrete beams, bar bending schedules (BS 8110), and MEP conduit overlays.
+                </p>
+              </div>
+              <div className="pt-4 mt-4 border-t border-white/10 flex items-center justify-between text-xs font-semibold text-[#1F6FEB]">
+                <span>Launch Blueprint Engine</span>
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </div>
+            </Link>
+
+            {/* Card 2: Trade Skills */}
+            <Link
+              to="/skills"
+              className="p-5 rounded-2xl bg-[#0B1B2B] border border-[#2B4560]/60 hover:border-[#C8A24A] transition-all group flex flex-col justify-between"
+            >
+              <div className="space-y-3">
+                <div className="w-10 h-10 rounded-xl bg-[#C8A24A]/20 text-[#C8A24A] flex items-center justify-center group-hover:scale-105 transition-transform">
+                  <Layers className="w-5 h-5 text-[#1E9E6A]" />
+                </div>
+                <h3 className="font-display font-bold text-base text-white group-hover:text-[#C8A24A] transition-colors">
+                  Trade Skills & Artisan Verification
+                </h3>
+                <p className="text-xs text-[#D9DEE3]/70 leading-relaxed">
+                  Accredited masonry, steel fixing, EPRA electrician licensing, and daily Kenyan labor productivity benchmarks.
+                </p>
+              </div>
+              <div className="pt-4 mt-4 border-t border-white/10 flex items-center justify-between text-xs font-semibold text-[#C8A24A]">
+                <span>Verify Trade Credentials</span>
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </div>
+            </Link>
+
+            {/* Card 3: Site Instagram */}
+            <Link
+              to="/instagram"
+              className="p-5 rounded-2xl bg-[#0B1B2B] border border-[#2B4560]/60 hover:border-[#1E9E6A] transition-all group flex flex-col justify-between"
+            >
+              <div className="space-y-3">
+                <div className="w-10 h-10 rounded-xl bg-[#1E9E6A]/20 text-[#1E9E6A] flex items-center justify-center group-hover:scale-105 transition-transform">
+                  <Camera className="w-5 h-5 text-[#1F6FEB]" />
+                </div>
+                <h3 className="font-display font-bold text-base text-white group-hover:text-[#1E9E6A] transition-colors">
+                  Site Instagram: Proof Stream
+                </h3>
+                <p className="text-xs text-[#D9DEE3]/70 leading-relaxed">
+                  Geotagged site photos, concrete slump tests, and laboratory cube crushing strength certificates with SHA-256 signatures.
+                </p>
+              </div>
+              <div className="pt-4 mt-4 border-t border-white/10 flex items-center justify-between text-xs font-semibold text-[#1E9E6A]">
+                <span>Explore Site Proof Feed</span>
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </div>
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* 3. TRUST & ESCROW PILLARS */}
       <section className="bg-[#0B1B2B] text-white py-14">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -247,10 +326,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ currency, onSelectRole
       <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4">
           <div>
-            <span className="text-xs font-mono font-bold uppercase tracking-wider text-[#1F6FEB]">
-              VERIFIED PROFESSIONALS & FIRMS
-            </span>
-            <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#0B1B2B] mt-1">
+            <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#0B1B2B]">
               Top registered talent on site.
             </h2>
             <p className="text-xs text-[#2B4560]/70 mt-1">
@@ -323,10 +399,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ currency, onSelectRole
       <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="bg-[#0B1B2B] text-white rounded-2xl p-6 sm:p-8 border border-[#2B4560]/40 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div>
-            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#C8A24A]">
-              FOR INSTITUTIONAL & ANGEL INVESTORS
-            </span>
-            <h3 className="font-display text-xl sm:text-2xl font-bold mt-1">
+            <h3 className="font-display text-xl sm:text-2xl font-bold">
               Explore the FUNDI Investor Demo Dashboard
             </h3>
             <p className="text-xs sm:text-sm text-[#D9DEE3]/70 mt-1 max-w-xl">

@@ -75,6 +75,14 @@ export interface Milestone {
     platformFeeMinor: number;
     retentionAmountMinor: number;
   };
+  verificationAudit?: {
+    verifiedBy: string;
+    role: string;
+    regNumber: string;
+    verifiedAt: string;
+    checksum: string;
+    inspectionReport: string;
+  };
 }
 
 export interface BlueprintLayer {

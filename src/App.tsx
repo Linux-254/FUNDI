@@ -18,6 +18,9 @@ import { SmartBriefWizardPage } from './pages/SmartBriefWizardPage';
 import { AdminConsolePage } from './pages/AdminConsolePage';
 import { KnowledgeBasePage } from './pages/KnowledgeBasePage';
 import { ProjectDashboardPage } from './pages/ProjectDashboardPage';
+import { BlueprintPage } from './pages/BlueprintPage';
+import { SkillsPage } from './pages/SkillsPage';
+import { SiteShowcasePage } from './pages/SiteShowcasePage';
 import { api } from './lib/api';
 import { UserRole } from './types';
 import { Building2, Home, AlertCircle } from 'lucide-react';
@@ -39,7 +42,7 @@ export default function App() {
 
   return (
     <BrowserRouter>
-      <div className="min-h-screen flex flex-col bg-[#F4F1EA] text-[#0B1B2B]">
+      <div className="min-h-screen flex flex-col bg-[#F4F1EA] text-[#0B1B2B] w-full max-w-full overflow-x-hidden">
         {/* Universal Top Navigation with Top Bar Contract */}
         <Navbar
           currentRole={currentRole}
@@ -49,7 +52,7 @@ export default function App() {
         />
 
         {/* Dynamic Route View */}
-        <main className="flex-1">
+        <main className="flex-1 w-full max-w-full overflow-x-hidden">
           <Routes>
             <Route 
               path="/" 
@@ -62,6 +65,26 @@ export default function App() {
             <Route 
               path="/projects" 
               element={<ProjectDashboardPage currency={currency} currentUserRole={currentRole} onSelectRole={handleRoleChange} />} 
+            />
+            <Route 
+              path="/blueprint" 
+              element={<BlueprintPage currency={currency} />} 
+            />
+            <Route 
+              path="/design" 
+              element={<BlueprintPage currency={currency} />} 
+            />
+            <Route 
+              path="/skills" 
+              element={<SkillsPage currency={currency} />} 
+            />
+            <Route 
+              path="/instagram" 
+              element={<SiteShowcasePage currency={currency} />} 
+            />
+            <Route 
+              path="/feed" 
+              element={<SiteShowcasePage currency={currency} />} 
             />
             <Route 
               path="/marketplace" 

@@ -11,6 +11,7 @@ interface IndicativeBadgeProps {
   size?: 'xs' | 'sm' | 'md';
   onVerify?: () => void;
   className?: string;
+  asSpan?: boolean;
 }
 
 export const IndicativeBadge: React.FC<IndicativeBadgeProps> = ({
@@ -21,7 +22,8 @@ export const IndicativeBadge: React.FC<IndicativeBadgeProps> = ({
   verifyAt: propVerifyAt,
   size = 'sm',
   onVerify,
-  className = ''
+  className = '',
+  asSpan = false
 }) => {
   const [showModal, setShowModal] = useState(false);
 
@@ -34,12 +36,27 @@ export const IndicativeBadge: React.FC<IndicativeBadgeProps> = ({
 
   const isIndicative = confidence === 'low' || !lastVerifiedAt;
 
+  const Tag = asSpan ? 'span' : 'button';
+  const tagProps = asSpan 
+    ? {
+        role: 'button',
+        tabIndex: 0,
+        onKeyDown: (e: React.KeyboardEvent) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            e.stopPropagation();
+            setShowModal(true);
+          }
+        }
+      } 
+    : { type: 'button' as const };
+
   return (
     <>
       {isIndicative ? (
-        <button
-          type="button"
-          onClick={(e) => {
+        <Tag
+          {...tagProps}
+          onClick={(e: React.MouseEvent) => {
             e.stopPropagation();
             setShowModal(true);
           }}
@@ -52,11 +69,11 @@ export const IndicativeBadge: React.FC<IndicativeBadgeProps> = ({
         >
           <AlertTriangle className={size === 'xs' ? 'w-2.5 h-2.5 text-amber-700 shrink-0' : 'w-3 h-3 text-amber-700 shrink-0'} />
           <span>Indicative · verify</span>
-        </button>
+        </Tag>
       ) : confidence === 'medium' ? (
-        <button
-          type="button"
-          onClick={(e) => {
+        <Tag
+          {...tagProps}
+          onClick={(e: React.MouseEvent) => {
             e.stopPropagation();
             setShowModal(true);
           }}
@@ -68,11 +85,11 @@ export const IndicativeBadge: React.FC<IndicativeBadgeProps> = ({
         >
           <span className="w-1.5 h-1.5 rounded-full bg-blue-600" />
           <span>Verified (Mid)</span>
-        </button>
+        </Tag>
       ) : (
-        <button
-          type="button"
-          onClick={(e) => {
+        <Tag
+          {...tagProps}
+          onClick={(e: React.MouseEvent) => {
             e.stopPropagation();
             setShowModal(true);
           }}
@@ -84,7 +101,7 @@ export const IndicativeBadge: React.FC<IndicativeBadgeProps> = ({
         >
           <CheckCircle2 className={size === 'xs' ? 'w-2.5 h-2.5 text-emerald-600' : 'w-3 h-3 text-emerald-600'} />
           <span>Verified</span>
-        </button>
+        </Tag>
       )}
 
       {/* Verification & Data Quality Modal */}
